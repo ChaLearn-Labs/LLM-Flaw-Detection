@@ -1,0 +1,5 @@
+_.*
+.DS_store
+.env
+Result/
+visualization.md

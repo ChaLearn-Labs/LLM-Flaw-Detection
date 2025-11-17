@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Flaw Annotated Document</title>
+    <style>
+    body { 
+        font-family: Arial, sans-serif; 
+        padding: 30px; 
+        background-color: #fafafa;
+        line-height: 1.6;
+    }
+    h1 {
+        font-size: 28px;
+        color: #222;
+        margin-bottom: 5px;
+    }
+    p.description {
+        color: #555;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+    .header {
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+    }
+    .categories {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .category { 
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px; 
+        border-radius: 6px; 
+        color: white; 
+        font-weight: bold; 
+        width: fit-content;
+        cursor: pointer;
+        transition: background-color 0.3s, opacity 0.3s;
+        user-select: none;
+    }
+
+    .category input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: white;
+        cursor: pointer;
+    }
+
+    /* Active (selected) category colors */
+    /* Category header colors (dark base tone) */
+    .cat1.active { background-color: #0047AB; }  /* Deep Royal Blue */
+    .cat2.active { background-color: #C21807; }  /* Deep Red */
+    .cat3.active { background-color: #6A0DAD; }  /* Deep Violet */
+    .cat4.active { background-color: #006400; }  /* Deep Green */
+    .cat5.active { background-color: #A05200; }  /* Deep Amber */
+
+    /* Inactive (deselected) greyed-out colors */
+    .category.inactive {
+        background-color: #bfbfbf;
+        opacity: 0.8;
+    }
+
+    /* Flaw styling — active by default */
+    .flaw { 
+        position: relative; 
+        border-radius: 4px; 
+        padding: 2px 4px; 
+        transition: background-color 0.22s ease, box-shadow 0.18s ease, padding 0.18s ease, opacity 0.18s ease;
+        color: inherit;           /* keep text color from surrounding content */
+        display: inline;          /* ensure inline flow */
+        white-space: normal;
+    }
+
+    /* Inactive (de-highlight) — keep text visible but remove highlight */
+    .flaw.inactive {
+        background: transparent !important;   /* remove background color */
+        box-shadow: none !important;
+        padding: 0 !important;                /* remove extra padding so text fits naturally */
+        border-radius: 0 !important;
+        opacity: 1;                           /* keep text fully visible */
+    }
+
+    .flaw-modal {
+        display: none; /* hidden by default */
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+    }
+    .flaw-modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 50%;
+        max-width: 600px;
+        position: relative;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .flaw-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .flaw-modal-description {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    .flaw-modal-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .meta-box {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        border-radius: 8px;
+        background-color: rgb(54, 54, 54); /* subtle shaded boxes */
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+
+    /* ===== CATEGORY COLOR INTENSITIES ===== */
+
+    /* Category 1 (Blue) */
+    .cat1.conf1 { background-color: #D6E4FF; }
+    .cat1.conf2 { background-color: #A7C4FF; }
+    .cat1.conf3 { background-color: #6B9EFF; }
+    .cat1.conf4 { background-color: #336BFF; }
+    .cat1.conf5 { background-color: #0047AB; }
+
+    /* Category 2 (Red) */
+    .cat2.conf1 { background-color: #FFD6D1; }
+    .cat2.conf2 { background-color: #FF9E8F; }
+    .cat2.conf3 { background-color: #FF6F5E; }
+    .cat2.conf4 { background-color: #E5391A; }
+    .cat2.conf5 { background-color: #C21807; }
+
+    /* Category 3 (Violet) */
+    .cat3.conf1 { background-color: #EEDCFF; }
+    .cat3.conf2 { background-color: #D2A8FF; }
+    .cat3.conf3 { background-color: #B873FF; }
+    .cat3.conf4 { background-color: #8E44E8; }
+    .cat3.conf5 { background-color: #6A0DAD; }
+
+    /* Category 4 (Green) */
+    .cat4.conf1 { background-color: #E0F5E0; }
+    .cat4.conf2 { background-color: #A9E0A9; }
+    .cat4.conf3 { background-color: #6BC96B; }
+    .cat4.conf4 { background-color: #338F33; }
+    .cat4.conf5 { background-color: #006400; }
+
+    /* Category 5 (Amber) */
+    .cat5.conf1 { background-color: #FFE8CC; }
+    .cat5.conf2 { background-color: #FFCD99; }
+    .cat5.conf3 { background-color: #FFB266; }
+    .cat5.conf4 { background-color: #D98419; }
+    .cat5.conf5 { background-color: #A05200; }
+</style>
+
+</head>
+<body>
+    <!-- Modal structure -->
+    <div id="flawModal" class="flaw-modal">
+        <div class="flaw-modal-content">
+            <span class="flaw-modal-close">&times;</span>
+            
+            <div class="flaw-modal-body">
+                <p id="modalDescription" class="flaw-modal-description">Description goes here...</p>
+            </div>
+
+            <div class="flaw-modal-meta">
+                <span id="modalCategory" class="meta-box">Category</span>
+                <span id="modalSeverity" class="meta-box">Severity</span>
+                <span id="modalConfidence" class="meta-box">Confidence</span>
+            </div>
+           
+        </div>
+    </div>
+    <!-- Categories header -->
+    <div class="header">
+        <h1>Flaw-Annotated Document</h1>
+        <p class="description">
+            This document highlights flaws identified in the paper. Each category below represents a specific type of issue, and the annotated sections within the text are color-coded accordingly.
+        </p>
+        <div class="categories">
+            <div class="category cat1 active" data-cat="cat1">
+                <input type="checkbox" checked>
+                Empirical Evaluation Flaws ({{ flaw_counts['cat1'] }})
+            </div>
+            <div class="category cat2 inactive" data-cat="cat2">
+                <input type="checkbox">
+                Methodological & Theoretical Flaws ({{ flaw_counts['cat2'] }})
+            </div>
+            <div class="category cat3 inactive" data-cat="cat3">
+                <input type="checkbox">
+                Positioning & Contribution Flaws ({{ flaw_counts['cat3'] }})
+            </div>
+            <div class="category cat4 inactive" data-cat="cat4">
+                <input type="checkbox">
+                Presentation & Reproducibility Flaws ({{ flaw_counts['cat4'] }})
+            </div>
+            <div class="category cat5 inactive" data-cat="cat5">
+                <input type="checkbox">
+                Failure to Address Limitations or Ethical Concerns ({{ flaw_counts['cat5'] }})
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        {{ annotated_content | safe }}
+    </div>
+
+    <script>
+        // Helper function to toggle de-highlight (inactive) by category
+        function toggleCategoryFlaws(categoryClass, active) {
+            document.querySelectorAll(`.flaw.${categoryClass}`).forEach(span => {
+                if (active) {
+                    span.classList.remove('inactive');
+                } else {
+                    span.classList.add('inactive');
+                }
+            });
+        }
+
+        document.querySelectorAll('.flaw').forEach(span => {
+            span.addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent bubbling
+                const bgColor = window.getComputedStyle(span).backgroundColor;
+               
+                const modal = document.getElementById('flawModal');
+                const modalContent = modal.querySelector('.flaw-modal-content');
+                // Apply color to inner box only
+                modalContent.style.backgroundColor = bgColor;
+                document.getElementById('modalCategory').innerText = `Category: ${span.dataset.category}`;
+                document.getElementById('modalSeverity').innerText = `Severity: ${span.dataset.severity}`;
+                document.getElementById('modalConfidence').innerText = `Confidence: ${span.dataset.confidence}`;
+                document.getElementById('modalDescription').innerText = span.dataset.description;
+
+                modal.style.display = "block";
+            });
+        });
+
+        // Close modal
+        document.querySelector('.flaw-modal-close').addEventListener('click', () => {
+            document.getElementById('flawModal').style.display = "none";
+        });
+
+        // Close when clicking outside the modal content
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('flawModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        // Toggle category activation and linked flaw spans
+        document.querySelectorAll('.category').forEach(cat => {
+            const checkbox = cat.querySelector('input[type="checkbox"]');
+            const categoryClass = cat.dataset.cat;
+
+            // Click on category box
+            cat.addEventListener('click', (e) => {
+                if (e.target.tagName.toLowerCase() === 'input') return;
+
+                const isActive = cat.classList.contains('active');
+                if (isActive) {
+                    cat.classList.remove('active');
+                    cat.classList.add('inactive');
+                    checkbox.checked = false;
+                    toggleCategoryFlaws(categoryClass, false);
+                } else {
+                    cat.classList.remove('inactive');
+                    cat.classList.add('active');
+                    checkbox.checked = true;
+                    toggleCategoryFlaws(categoryClass, true);
+                }
+            });
+
+            // Click on checkbox directly
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (checkbox.checked) {
+                    cat.classList.add('active');
+                    cat.classList.remove('inactive');
+                    toggleCategoryFlaws(categoryClass, true);
+                } else {
+                    cat.classList.remove('active');
+                    cat.classList.add('inactive');
+                    toggleCategoryFlaws(categoryClass, false);
+                }
+            });
+
+            // Initial state
+            toggleCategoryFlaws(categoryClass, checkbox.checked);
+        });
+    </script>
+</body>
+</html>
